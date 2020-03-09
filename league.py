@@ -11,10 +11,22 @@ class League():
 
 		self.ranking = Ranking(self.players, initial_elo=self.INITIAL_ELO)
 
-
+	def play_rounds(n_rounds, verbose=False):
+		for _ in range(n_rounds):
+			self.play_round()
+		if verbose:
+			print(self.print_ranking())
 
 	def play_round(self):
 		pairings = self._get_pairings()
+		results = []
+		for p1, p2 in pairings:
+			p1 = self.players[p1]
+			p2 = self.players[p2]
+			match = Match(p1, p2)
+			result = match.play()
+			results.append(result)
+			self.update_ranking(p1, p2, result)
 
 	def _create_players(self, players_path):
 		for alias, model in read_csv(players_path):
@@ -26,6 +38,8 @@ class League():
 						 key = lambda test_list: test_list[1])
 		pairs = []
 		while len(ordered)>1:
+			# with this algo the top players are the ones who are more
+			# likely to be left out
 		    o_ = ordered[:6]
 		    idx = np.random.choice(range(min(5, len(ordered))), 2, replace=False)
 		    p1 = o_[idx[0]]
@@ -33,12 +47,17 @@ class League():
 		    pairs.append([p1, p2])
 		    ordered.pop(ordered.index(p1))
 		    ordered.pop(ordered.index(p2))
+		return pairs
 
-	def _update_ranking(self, info):
-		pass
+	def _update_ranking(self, p1, p2, results):
+		self.ranking.update_ranking(p1.alias, p2.alias,
+									winner=result['winner'],
+									draw=result['draw'])
 
 	def print_ranking(self):
-		pass
+		self.ranking.print_ranking()
+
+	
 
 
 class Player():
@@ -60,15 +79,20 @@ class Match():
 		self.player_1 = player_1
 		self.player_2 = player_2
 
-	def _load_players(self, player):
-		pass
-
 	def play(self):
 		self.env.reset()
 		# game loop
-		# last infor object returns the winnder of the game
+		# last info object returns the winnde of the game
 
-		self.results = info
+		pass # game loop
+
+		'''
+		info = {'player_1': p1.alias,
+		        'player_2': p2.alias,
+		        'winner': None/p.alias,
+		        'draw': True/False}
+		'''
+		return info
 
 class Ranking():
 	def __init__(self, players, initial_elo=1200):
