@@ -18,6 +18,7 @@ class League():
 			print(self.print_ranking())
 
 	def play_round(self):
+		#TODO: paralelize this
 		pairings = self._get_pairings()
 		results = []
 		for p1, p2 in pairings:
@@ -40,13 +41,13 @@ class League():
 		while len(ordered)>1:
 			# with this algo the top players are the ones who are more
 			# likely to be left out
-		    o_ = ordered[:6]
-		    idx = np.random.choice(range(min(5, len(ordered))), 2, replace=False)
-		    p1 = o_[idx[0]]
-		    p2 = o_[idx[1]]
-		    pairs.append([p1, p2])
-		    ordered.pop(ordered.index(p1))
-		    ordered.pop(ordered.index(p2))
+				o_ = ordered[:6]
+				idx = np.random.choice(range(min(5, len(ordered))), 2, replace=False)
+				p1 = o_[idx[0]]
+				p2 = o_[idx[1]]
+				pairs.append([p1, p2])
+				ordered.pop(ordered.index(p1))
+				ordered.pop(ordered.index(p2))
 		return pairs
 
 	def _update_ranking(self, p1, p2, results):
@@ -57,7 +58,7 @@ class League():
 	def print_ranking(self):
 		self.ranking.print_ranking()
 
-	
+
 
 
 class Player():
